@@ -1,0 +1,21 @@
+for dir in `seq 11840 20 12000`; do
+
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+grep Local $dir/err | awk '{ printf "%15.9f\n", $7}' >> el_energy_apbs
+
+done
+
+wc -l el_energy_apbs > temp
+awk '{ printf "%d\n", $1 }' temp > parameters_af.dat
+
+awk '{ printf $11 " " $18 "\n"}' lipid_mixing.dat > test.dat
+./adsorption_F parameters_af.dat test.dat el_energy_apbs > adsorption_F.dat
+rm test.dat
+gnuplot plot_energy.dat
+
+
+./check_pdb combinedcharge.dx parameters_dynamics.dat pip2_fraction2.pdb analysis2.pdb > pip2_number2.dat
+
+

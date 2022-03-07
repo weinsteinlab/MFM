@@ -1,0 +1,28 @@
+#!/bin/bash
+
+trajectory_base=/pbtech_mounts/hwlab_store/khelgeo/apbs/milka/with_membrane3
+
+for a in `seq 10000 12000`; do
+
+	 /pbtech_mounts/hwlab_store008/khelgeo/apbs_panda/bin/x86_64-unknown-linux/apbs apbs.in analytical_0,004926108.dat > err
+	
+	./dynamics parameters_dynamics.dat potential.dx combinedcharge.dx combinedkappa.dx chargenew.dx
+
+        test=`expr $a % 20`
+
+        if [ $test -eq 0 ]; then
+
+                mkdir $trajectory_base/$a
+
+                mv combinedcharge.dx potential.dx err $trajectory_base/$a
+
+		gzip $trajectory_base/$a/combinedcharge.dx
+		gzip $trajectory_base/$a/potential.dx
+
+        fi
+
+        mv chargenew.dx combinedcharge.dx
+
+done
+
+

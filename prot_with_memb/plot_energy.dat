@@ -1,0 +1,68 @@
+set encoding iso
+set term postscript portrait enhanced monochrome "Times-BoldItalic" 16
+set output "adsorption_F.ps"
+
+set boxwidth 0.4
+set pointsize 1.0
+set multi
+set bmargin 3
+set size 0.89, 0.30
+set lmargin 8.0
+set mytics 3
+set key right bottom
+#set xrange [0.0:1000]
+#set yrange [-0.05:0.5]
+show key
+set xlabel "iterations"
+set ylabel "{/Symbol D}F, k_{B}T"
+plot "adsorption_F.dat" using ($1*20):($5) title "" w l
+
+set nolabel
+set format x ""
+#set yrange [-50:900]
+#set xtics 0,0.1,0.5
+#set xrange [0:0.51]
+#set yrange [-10:-2]
+set size 0.89, 0.30
+set origin 0.0,0.23
+set lmargin 8.0
+set mytics 3
+set key right top
+show key
+set xlabel ""
+set ylabel "F_{elec}, k_{B}T"
+plot "adsorption_F.dat" using ($1*20):($3) title "" w l
+
+set nolabel
+set format x ""
+#set yrange [-50:900]
+#set xtics 0,0.1,0.5
+#set xrange [0:0.51]
+#set yrange [-10:-2]
+set size 0.89, 0.30
+set origin 0.0,0.46
+set lmargin 8.0
+set mytics 3
+set key right top
+show key
+set xlabel ""
+set ylabel "F_{mix}, k_{B}T"
+plot "adsorption_F.dat" using ($1*20):($2) title "" w l
+
+
+set nolabel
+set format x ""
+#set yrange [-50:900]
+#set xtics 0,0.1,0.5
+#set xrange [0:0.51]
+#set yrange [-10:-2]
+set size 0.89, 0.30
+set origin 0.0,0.69
+set lmargin 8.0
+set mytics 3
+set key right top
+show key
+set xlabel ""
+set ylabel "F_{fourth}, k_{B}T"
+plot "adsorption_F.dat" using ($1*20):($4) title "" w l
+

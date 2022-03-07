@@ -1,0 +1,39 @@
+#!/bin/bash
+workdir=/home/khelgeo/apbs/synB1_membrane_after_md_old            
+pdfdir=/home/khelgeo/apbs/synB1_membrane_after_md_old/pdfs
+tifdir=/home/khelgeo/apbs/synB1_membrane_after_md_old/tifs
+
+
+for a in `seq 0 100 3000`; do
+
+        test=`expr $a / 100`
+
+        f=`expr $test + 1`
+
+	gunzip $workdir/$a/combinedcharge.dx.gz 
+
+	rm $workdir/$a/potential.dx.gz
+
+	./check $workdir/$a/combinedcharge.dx parameters_dynamics.dat pip2_fraction_$a.dat > test.dat 
+
+	./m2ps --rows=257 --cols=257 --min=0.5 --max=1.5 --xtics=0 --ytics=0 < pip2_fraction_$a.dat > pip2_fraction.ps
+
+	grep -v 'nan' pip2_fraction.ps > temp.ps
+
+	ps2pdf temp.ps pip2_fraction$f.pdf
+
+	convert pip2_fraction$f.pdf pip2_fraction$f.tif
+
+	mv pip2_fraction$f.pdf $pdfdir
+	
+	mv pip2_fraction$f.tif $tifdir
+	
+	mv pip2_fraction_$a.dat $workdir/$a
+	
+	gzip $workdir/$a/combinedcharge.dx
+
+done
+
+
+
+

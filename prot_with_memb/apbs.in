@@ -1,0 +1,46 @@
+read 
+    mol pqr flat256A.pqr  # Read flat surface (mol 1)
+end
+read
+    charge dx combinedcharge.dx
+end
+read
+    diel dx combinedepsx.dx combinedepsy.dx combinedepsz.dx
+end
+read
+    kappa dx combinedkappa.dx
+end
+elec name bar
+    mg-manual                          # Use the multigrid method
+    dime 257 257 257                   # Grid dimensions
+    nlev 7
+    grid 1.0 1.0 1.0                   # Grid length
+    gcent 0.0 0.0 0.0
+    mol 1                              
+    npbe                               
+    bcfl zero                          # Multipole boundary conditions
+    ion 1 0.050 0.0                    # Zero ionic strength
+    ion -1 0.050 0.0                   # Zero ionic strength
+    pdie 2.0                           # Solute dielectric
+    sdie 78.54                         # Solvent dielectric
+    chgm spl2                          # Charge disc method (linear)
+    sdens 10.0
+    srad 1.4                           # Solvent radius
+    srfm mol                           # specify the model for die
+    swin 0.3                           # Surface cubic spline window
+    temp 293.00                        # Temperature
+    gamma 0.105                        # Surface tension (in kJ/mol/A^2)
+    calcenergy total 
+    calcenergy comps 
+    calcforce no
+    usemap charge 1
+    usemap diel 1
+    usemap kappa 1
+    write pot dx potential            # Write potential to potential.dx
+end
+
+print
+	energy bar
+end
+
+quit

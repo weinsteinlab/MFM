@@ -1,0 +1,26 @@
+set encoding iso
+set term postscript portrait color solid "Times-BoldItalic" 14
+#set output "radial_charge_denstiy_PIP2.ps"
+#set output "radial_charge_density_PS.ps"
+set output "radial_charge_density_total.ps"
+
+
+set boxwidth 0.4
+set pointsize 1.0
+set multi
+set bmargin 3
+set size 0.85, 0.6
+set lmargin 8.0
+set mytics 3
+set key right top  
+show key
+set xlabel "radial distance, A"
+#set ylabel "local density of PIP2 lipids"
+#set ylabel "local density of PS lipids"
+set ylabel "local density (total)"
+set xrange [128:256]
+
+#plot "3A_PIP2_0_radial.dat" using 2:($3) title "0 ns" w l, "3A_PIP2_10_radial.dat" using 2:($3) title "10 steps" w l, "3A_PIP2_20_radial.dat" using 2:($3) title "20 steps" w l, "3A_PIP2_30_radial.dat" using 2:($3) title "30 steps" w l
+#plot "3A_PS_0_radial.dat" using 2:($3) title "0 ns" w l, "3A_PS_10_radial.dat" using 2:($3) title "10 steps" w l, "3A_PS_20_radial.dat" using 2:($3) title "20 steps" w l, "3A_PS_30_radial.dat" using 2:($3) title "30 steps" w l
+plot "3A_charge_0_radial.dat" using 2:($3) title "0 ns" w l, "3A_charge_10_radial.dat" using 2:($3) title "10 steps" w l, "3A_charge_20_radial.dat" using 2:($3) title "20 steps" w l, "3A_charge_30_radial.dat" using 2:($3) title "30 steps" w l
+

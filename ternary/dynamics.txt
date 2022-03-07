@@ -1,0 +1,383 @@
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
+#define area_per_lipid 70.0
+#define header_lines 11
+#define trailor 5
+#define coor_number 4.0
+
+void Randomize();
+double Random(double);
+double GRandom(double, double);
+void ReadMap(FILE *inptr, double grid_points, double *data);
+void WriteMap(FILE *outptr, double grid_points, double *data);
+
+char headers[11][150], tails[5][150];
+
+
+main (int argc, char *argv[])
+
+{
+
+	int i, j, k, nx, ny, nz, grid_points, **nn_x_left, **nn_x_right, **nn_y_up, **nn_y_down, tt;
+	int **nnn_left_up_x, **nnn_left_down_x, **nnn_right_up_x, **nnn_right_down_x;
+	int **nnn_left_up_y, **nnn_left_down_y, **nnn_right_up_y, **nnn_right_down_y;
+	double noise, **niu1, **niu2, **order_parameter_PS, **order_parameter_PIP2, *dataPotential, *dataChargePS, *dataChargePIP2; 
+	double *dataCharge, *dataKappa, **SurfPotential, w, v, order_parameter_PC1, order_parameter_PC2, order_parameter_PC3, order_parameter_PC4;
+	double pos_exp, neg_exp, Iv_integrand, Ip_integrand, Is_integrand, const_rand, dt, laplacian_term, sigma_ion, order_parameter_PC;
+	double hx, hy, hzed, origin_x, origin_y, origin_z, check_sum, average_op_PS, average_op_PIP2, surf_z, **dFdEta_PS, **dFdEta_PIP2, up, down, sum_op;
+	double xaiPC, xaiPS, valency_PS, valency_PIP2, average_sigma_PS, average_sigma_PIP2, totalPS, totalPIP2;
+	double PS_first_term, PIP2_first_term, PS_second_term, PIP2_second_term, PC_term, PS_laplacian_term, PIP2_laplacian_term;
+	FILE *paraptr, *potptr, *chargeptr, *out3Dptr, *outptr, *inPSptr, *inPIP2ptr, *outPSptr, *outPIP2ptr, *psptr, *pipptr;
+
+	Randomize();
+	check_sum = 0;
+	w = 1.0;
+	v = 1.0-w;
+
+    	if ((paraptr = fopen(argv[1], "r")) == NULL)
+                printf ("\nERROR - Cannnot open parameter file\n");
+
+        if ((potptr = fopen(argv[2], "r")) == NULL)
+                printf ("\nERROR - Cannnot open potential map file\n");
+
+        if ((chargeptr = fopen(argv[3], "r")) == NULL)
+                printf ("\nERROR - Cannnot open charge map file\n");
+
+        if ((inPSptr = fopen(argv[4], "r")) == NULL)
+                printf ("\nERROR - Cannnot open kappa map file\n");
+
+        if ((inPIP2ptr = fopen(argv[5], "r")) == NULL)
+                printf ("\nERROR - Cannnot open kappa map file\n");
+
+        if ((psptr = fopen(argv[6], "w")) == NULL)
+                printf ("\nERROR - Cannnot open the output file\n");
+
+        if ((pipptr = fopen(argv[7], "w")) == NULL)
+                printf ("\nERROR - Cannnot open the output file\n");
+
+
+/****** READ PARAMETER FILE ***/
+
+        fscanf (paraptr, "%d\n", &nx);                  /*  grid points in x direction */
+        fscanf (paraptr, "%d\n", &ny);                  /*  grid points in y direction */
+        fscanf (paraptr, "%d\n", &nz);                  /*  grid points in z direction */
+        fscanf (paraptr, "%lf\n", &hx);                 /*  mesh size in x direction, in A */
+        fscanf (paraptr, "%lf\n", &hy);                 /*  mesh size in y direction, in A */
+        fscanf (paraptr, "%lf\n", &hzed);                 /*  mesh size in z direction, in A */
+        fscanf (paraptr, "%lf\n", &origin_x); 		/*  origin x coordinate */
+        fscanf (paraptr, "%lf\n", &origin_y);           /*  origin y coordinate */
+        fscanf (paraptr, "%lf\n", &origin_z);   	/*  origin z coordinate */
+        fscanf (paraptr, "%lf\n", &surf_z);   		/*  z coordinate of the surface */
+        fscanf (paraptr, "%lf\n", &average_sigma_PS);      /*  average charge density on the surface of PS */
+        fscanf (paraptr, "%lf\n", &average_sigma_PIP2);      /*  average charge density on the surface of PIP2*/
+        fscanf (paraptr, "%lf\n", &sigma_ion);          /*  ion surface charge density */
+        fscanf (paraptr, "%lf\n", &valency_PS);   		/*  valency of the PS lipid */
+        fscanf (paraptr, "%lf\n", &valency_PIP2);   		/*  valency of the PIP2 lipid */
+        fscanf (paraptr, "%lf\n", &xaiPS);   		/*  ratio of the diffusion constants */
+        fscanf (paraptr, "%lf\n", &xaiPC);   		/*  ratio of the diffusion constants */
+        fscanf (paraptr, "%lf\n", &dt);   		/*  dimensioneless timestep for the dynamics */
+
+	average_op_PS = fabs(area_per_lipid*average_sigma_PS/valency_PS); /* this is average fraction of chargd lipids */
+	average_op_PIP2 = fabs(area_per_lipid*average_sigma_PIP2/valency_PIP2); /* this is average fraction of chargd lipids */
+        grid_points = nx*ny*nz;
+
+        dataPotential = (double *) malloc(grid_points*(sizeof(double)));
+        dataCharge = (double *) malloc(grid_points*(sizeof(double)));
+        dataChargePS = (double *) malloc(grid_points*(sizeof(double)));
+        dataChargePIP2 = (double *) malloc(grid_points*(sizeof(double)));
+
+/*** READ APBS MAPS ****/
+
+	ReadMap(potptr, grid_points, dataPotential);
+	ReadMap(chargeptr, grid_points, dataCharge);
+	ReadMap(inPSptr, grid_points, dataChargePS);
+	ReadMap(inPIP2ptr, grid_points, dataChargePIP2);
+
+
+	order_parameter_PS = (double **) malloc(nx * sizeof(double *));
+        order_parameter_PS[0] = malloc(nx * ny * sizeof(double));
+        for(i = 1; i < nx; ++i)
+                order_parameter_PS[i] = order_parameter_PS[0] + i * ny;
+
+        order_parameter_PIP2 = (double **) malloc(nx * sizeof(double *));
+        order_parameter_PIP2[0] = malloc(nx * ny * sizeof(double));
+        for(i = 1; i < nx; ++i)
+                order_parameter_PIP2[i] = order_parameter_PIP2[0] + i * ny;
+
+        SurfPotential = (double **) malloc(nx * sizeof(double *));
+        SurfPotential[0] = malloc(nx * ny * sizeof(double));
+        for(i = 1; i < nx; ++i)
+                SurfPotential[i] = SurfPotential[0] + i * ny;
+
+        niu1 = (double **) malloc(nx * sizeof(double *));
+        niu1[0] = malloc(nx * ny * sizeof(double));
+        for(i = 1; i < nx; ++i)
+                niu1[i] = niu1[0] + i * ny;
+
+        niu2 = (double **) malloc(nx * sizeof(double *));
+        niu2[0] = malloc(nx * ny * sizeof(double));
+        for(i = 1; i < nx; ++i)
+                niu2[i] = niu2[0] + i * ny;
+
+        dFdEta_PS = (double **) malloc(nx * sizeof(double *));
+        dFdEta_PS[0] = malloc(nx * ny * sizeof(double));
+        for(i = 1; i < nx; ++i)
+                dFdEta_PS[i] = dFdEta_PS[0] + i * ny;
+
+        dFdEta_PIP2 = (double **) malloc(nx * sizeof(double *));
+        dFdEta_PIP2[0] = malloc(nx * ny * sizeof(double));
+        for(i = 1; i < nx; ++i)
+                dFdEta_PIP2[i] = dFdEta_PIP2[0] + i * ny;
+
+        nn_x_left = (int **) malloc(nx * sizeof(int *));
+        nn_x_left[0] = malloc(nx * ny * sizeof(int));
+        for(i = 1; i < nx; ++i)
+                nn_x_left[i] = nn_x_left[0] + i * ny;
+
+        nn_x_right = (int **) malloc(nx * sizeof(int *));
+        nn_x_right[0] = malloc(nx * ny * sizeof(int));
+        for(i = 1; i < nx; ++i)
+                nn_x_right[i] = nn_x_right[0] + i * ny;
+
+        nn_y_up = (int **) malloc(nx * sizeof(int *));
+        nn_y_up[0] = malloc(nx * ny * sizeof(int));
+        for(i = 1; i < nx; ++i)
+                nn_y_up[i] = nn_y_up[0] + i * ny;
+	
+        nn_y_down = (int **) malloc(nx * sizeof(int *));
+        nn_y_down[0] = malloc(nx * ny * sizeof(int));
+        for(i = 1; i < nx; ++i)
+                nn_y_down[i] = nn_y_down[0] + i * ny;
+                
+
+/*  Identifying charged surface points and remembering potential there and also calculating local lipid composition*/
+/*  which I call order parameter */
+
+
+        for (i=0;i<nx;++i) {
+                for (j=0;j<ny;++j) {
+                        for (k=0;k<nz;++k) {
+                                if ((origin_z+hzed*k) == surf_z) {
+                                        SurfPotential[i][j] = dataPotential[i*ny*nz+j*nz+k];
+                                        order_parameter_PS[i][j] = fabs(dataChargePS[i*ny*nz+j*nz+k]*area_per_lipid/valency_PS);
+                                        order_parameter_PIP2[i][j] = fabs(dataChargePIP2[i*ny*nz+j*nz+k]*area_per_lipid/valency_PIP2);
+		                        totalPS = totalPS + order_parameter_PS[i][j];
+		                        totalPIP2 = totalPIP2 + order_parameter_PIP2[i][j];
+                                }
+                        }
+                }
+        }
+
+
+
+	for (i=0;i<nx;++i) {		
+		for (j=0;j<ny;++j) {
+			if (i==0) 				/* This if-else structure identifies 4 nearest neighbors, */		
+				nn_x_left[i][j]=nx-1;		/* nn_x_left, nn_x_right, nn_y_up, nn_y_down, */
+			else					/* on 2-D square lattice by taking care of boundary conditions */
+				nn_x_left[i][j]=i-1;
+			if (i==nx-1) 
+				nn_x_right[i][j]=0;
+			else
+				nn_x_right[i][j]=i+1;
+			if (j==0) 
+				nn_y_up[i][j]=ny-1;
+			else
+				nn_y_up[i][j]=j-1;
+			if (j==ny-1) 
+				nn_y_down[i][j]=0;
+			else
+				nn_y_down[i][j]=j+1;
+ 
+			up = order_parameter_PS[i][j]*(1-average_op_PS-average_op_PIP2);
+			down = average_op_PS*(1-order_parameter_PS[i][j]-order_parameter_PIP2[i][j]);
+			dFdEta_PS[i][j] = log(up/down) - valency_PS*SurfPotential[i][j];  /* calculating gradients of F with respect to eta */
+                        if (i==nx/2)
+                               fprintf (psptr,"%d %d %lf %lf %lf %lf\n", i, j, up, down, log(up/down), valency_PS*SurfPotential[i][j]);
+                        up = order_parameter_PIP2[i][j]*(1-average_op_PS-average_op_PIP2);
+                        down = average_op_PIP2*(1-order_parameter_PS[i][j]-order_parameter_PIP2[i][j]);
+                        dFdEta_PIP2[i][j] = log(up/down) - valency_PIP2*SurfPotential[i][j];  /* calculating gradients of F with respect to eta */
+                        if (i==nx/2)
+                               fprintf (pipptr,"%d %d %lf %lf %lf %lf\n", i, j, up, down, log(up/down), valency_PIP2*SurfPotential[i][j]);
+		}
+	}
+
+	return 0;
+/* Dynamic update of the system */
+
+	totalPS = 0;
+	totalPIP2 = 0;
+
+	for (i=0;i<nx;++i) {
+		for (j=0;j<ny;++j) {
+			PS_first_term = (order_parameter_PS[nn_x_right[i][j]][j]-order_parameter_PS[nn_x_left[i][j]][j])*(dFdEta_PS[nn_x_right[i][j]][j] - dFdEta_PS[nn_x_left[i][j]][j]);
+			PS_second_term = (order_parameter_PS[i][nn_y_down[i][j]]-order_parameter_PS[i][nn_y_up[i][j]])*(dFdEta_PS[i][nn_y_down[i][j]] - dFdEta_PS[i][nn_y_up[i][j]]);
+			PS_laplacian_term = dFdEta_PS[nn_x_left[i][j]][j] + dFdEta_PS[nn_x_right[i][j]][j] + dFdEta_PS[i][nn_y_up[i][j]] + dFdEta_PS[i][nn_y_down[i][j]] - 4*dFdEta_PS[i][j];
+			PIP2_first_term = (order_parameter_PIP2[nn_x_right[i][j]][j]-order_parameter_PIP2[nn_x_left[i][j]][j])*(dFdEta_PIP2[nn_x_right[i][j]][j] - dFdEta_PIP2[nn_x_left[i][j]][j]);
+			PIP2_second_term = (order_parameter_PIP2[i][nn_y_down[i][j]]-order_parameter_PIP2[i][nn_y_up[i][j]])*(dFdEta_PIP2[i][nn_y_down[i][j]] - dFdEta_PIP2[i][nn_y_up[i][j]]);
+			PIP2_laplacian_term = dFdEta_PIP2[nn_x_left[i][j]][j] + dFdEta_PIP2[nn_x_right[i][j]][j] + dFdEta_PIP2[i][nn_y_up[i][j]] + dFdEta_PIP2[i][nn_y_down[i][j]] - 4*dFdEta_PIP2[i][j];
+			order_parameter_PS[i][j] = order_parameter_PS[i][j] + dt*0.25*PS_first_term + dt*0.25*PS_second_term + dt*order_parameter_PS[i][j]*PS_laplacian_term;
+			order_parameter_PIP2[i][j] = order_parameter_PIP2[i][j] + dt*0.25*PIP2_first_term + dt*0.25*PIP2_second_term + dt*order_parameter_PIP2[i][j]*PIP2_laplacian_term;
+			totalPS = totalPS + order_parameter_PS[i][j];
+			totalPIP2 = totalPIP2 + order_parameter_PIP2[i][j];
+			if (i==nx/2)
+			printf ("%d %d %lf %lf %lf %lf %lf %lf\n", i, j, PS_first_term, PS_second_term, PS_laplacian_term, PIP2_first_term, PIP2_second_term, PIP2_laplacian_term);
+
+		}					 	
+	}
+
+	printf ("%lf  %lf\n",totalPS/(nx*ny*1.0), totalPIP2/(nx*ny*1.0));
+
+/* Creating updated charge map on the surface and then writing the entire charge map for APBS */
+
+        for (i=0;i<nx;++i) {
+                for (j=0;j<ny;++j) {
+                        for (k=0;k<nz;++k) {
+                                if ((origin_z+hzed*k) == surf_z) {
+					if (average_sigma_PS < 0) 
+						dataChargePS[i*ny*nz+j*nz+k] = -order_parameter_PS[i][j]*valency_PS/area_per_lipid;
+					else
+						dataChargePS[i*ny*nz+j*nz+k] = order_parameter_PS[i][j]*valency_PS/area_per_lipid;
+                                        if (average_sigma_PIP2 < 0)
+                                                dataChargePIP2[i*ny*nz+j*nz+k] = -order_parameter_PIP2[i][j]*valency_PIP2/area_per_lipid;
+                                        else
+                                                dataChargePIP2[i*ny*nz+j*nz+k] = order_parameter_PIP2[i][j]*valency_PIP2/area_per_lipid;
+					dataCharge[i*ny*nz+j*nz+k] = dataChargePS[i*ny*nz+j*nz+k] + dataChargePIP2[i*ny*nz+j*nz+k];
+                                }
+                        }
+                }
+        }
+
+
+        WriteMap(outptr, grid_points, dataCharge);
+        WriteMap(outPSptr, grid_points, dataChargePS);
+        WriteMap(outPIP2ptr, grid_points, dataChargePIP2);
+
+/* Releasing all the memory*/
+
+	free(dataPotential);
+	free(dataCharge);
+	free(dataChargePS);
+	free(dataChargePIP2);
+	free(order_parameter_PS);
+	free(order_parameter_PIP2);
+	free(SurfPotential);
+	free(dFdEta_PS);
+	free(dFdEta_PIP2);
+	free(niu1);
+	free(niu2);
+	free(nn_x_right);
+	free(nn_x_left);
+	free(nn_y_up);
+	free(nn_y_down);
+	fclose(paraptr);
+	fclose(potptr);
+	fclose(chargeptr);
+	fclose(inPSptr);
+	fclose(inPIP2ptr);
+	fclose(outptr);
+	fclose(outPSptr);
+	fclose(outPIP2ptr);
+
+}
+
+/************************************************************************************************************/
+
+double Random(double range)
+{
+  return (random()*range)/2147483647L;
+}
+
+/************************************************************************************************************/
+
+void Randomize()
+{
+  srandom(time(NULL));
+}
+
+/************************************************************************************************************/
+
+double GRandom(double mean, double sigma)
+{
+  double v1 = Random(2.0) - 1.0;
+  double v2 = Random(2.0) - 1.0;
+  double rsq = v1*v1 + v2*v2;
+
+  while (rsq >= 1.0 || rsq == 0.0)
+    {
+      v1 = Random(2.0) - 1.0;
+      v2 = Random(2.0) - 1.0;
+      rsq = v1*v1 + v2*v2;
+    }
+
+  return mean+v1*sigma*sqrt(-2.0*log(rsq)/rsq);
+}
+
+/*** TO READ APBS MAPS ********************/
+
+
+void ReadMap (FILE *inptr, double grid_points, double *data) {
+
+        int i;
+
+        for (i=0; i<header_lines; ++i) {
+                fscanf (inptr, " %[^\n]", headers[i]);
+        }
+
+
+        i = 0;
+
+        do {
+
+              if (i==(grid_points-2))
+                   fscanf (inptr, "%lf %lf\n", &data[i], &data[i+1]);
+              else
+                   fscanf (inptr, "%lf%lf%lf\n", &data[i], &data[i+1], &data[i+2]);
+
+
+                i = i+3;
+
+        } while (i < grid_points);
+
+
+        for (i=0; i<trailor; ++i) {
+                fscanf (inptr, " %[^\n]", tails[i]);
+        }
+
+}
+
+/*** TO WRITE APBS MAPS ********************/
+
+
+void WriteMap (FILE *outptr, double grid_points, double *data) {
+
+        int i;
+
+        for (i=0; i<header_lines; ++i) {
+                fprintf (outptr, "%s\n", headers[i]);
+        }
+
+
+        i = 0;
+
+        do {
+
+              if (i==(grid_points-2))
+                   fprintf (outptr, "%15.8f%15.8f\n", data[i], data[i+1]);
+              else
+                   fprintf (outptr, "%15.8f%15.8f%15.8f\n", data[i], data[i+1], data[i+2]);
+
+
+                i = i+3;
+
+        } while (i < grid_points);
+
+
+        for (i=0; i<trailor; ++i) {
+                fprintf (outptr, "%s\n", tails[i]);
+        }
+
+}
+

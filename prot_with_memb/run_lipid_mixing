@@ -1,0 +1,185 @@
+dir=0
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx > lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1040
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1060
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1080
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1100
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1120
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1140
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1160
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1180
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1200
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1220
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1240
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1260
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1280
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1300
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1320
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1340
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1360
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1380
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1400
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1420
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1440
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1460
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1480
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1500
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1520
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1540
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1560
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1580
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1600
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1620
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1640
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1660
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1680
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1700
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1720
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+
+dir=1740
+gunzip $dir/combinedcharge.dx.gz
+./lipid_mixing parameters_mixing.dat $dir/combinedcharge.dx >> lipid_mixing.dat
+gzip $dir/combinedcharge.dx
+

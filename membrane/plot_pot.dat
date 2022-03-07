@@ -1,0 +1,100 @@
+set encoding iso
+set term postscript portrait enhanced solid color "Times-BoldItalic" 14
+set output "potential.ps"
+
+set boxwidth 0.4
+set pointsize 1.0
+set multi
+set bmargin 3
+set size 0.9, 0.35
+set lmargin 8.0
+set mytics 3
+set key top right     
+#set xrange [1000:10000]
+#set yrange [0.0:0.35]
+show key
+set xlabel "time, ns"
+set ylabel "Area, {\305}^{2}"
+#plot "/pbtech_mounts/hwlab_store/khelgeo/stard4/full_cterm/membrane_only_pip45/analysis/equilibration.dat" using ($2*$6/200) title "PIP(4,5)_{2}" w l, "/pbtech_mounts/hwlab_store/khelgeo/stard4/full_cterm/membrane_only_pip35/analysis/equilibration.dat" using ($2*$6/200) title "PIP(3,5)_{2}" w l
+
+#set nolabel
+#set format x ""
+#set yrange [-50:900]
+#set ytics 0,100,900
+#set xrange [-35:35]
+#set yrange [0.21:0.45]
+set size 0.9, 0.35
+set origin 0.0,0.0
+set lmargin 8.0
+set mytics 3
+set key top right
+set nokey
+set xlabel ""
+set ylabel "X, {\305}"
+plot "test.dat" using ($3):($4) title "" w l
+
+
+set nolabel
+set format x ""
+#set yrange [-50:900]
+#set ytics 0,100,900
+#set xrange [-35:35]
+#set yrange [0.21:0.45]
+set size 0.9, 0.35
+set origin 0.0,0.30
+set lmargin 8.0
+set mytics 3
+set key top right
+show key
+set xlabel ""
+set ylabel "Y, {\305}"
+
+
+set nolabel
+set format x ""
+#set yrange [-50:900]
+#set ytics 0,100,900
+#set xrange [-35:35]
+#set yrange [0.21:0.45]
+set size 0.9, 0.35
+set origin 0.0,0.60
+set lmargin 8.0
+set mytics 3
+set key top right
+set nokey
+set xlabel ""
+set ylabel "Z, {\305}"
+
+
+set nolabel
+set format x ""
+#set yrange [-50:900]
+#set ytics 0,100,900
+#set xrange [-35:35]
+#set yrange [0.21:0.45]
+set size 0.9, 0.22
+set origin 0.0,0.60
+set lmargin 8.0
+set mytics 3
+set key top right
+show key
+set xlabel ""
+set ylabel "Area, {\305}^{2}"
+
+
+set nolabel
+set format x ""
+#set yrange [-50:900]
+#set ytics 0,100,900
+#set xrange [-35:35]
+#set yrange [0.21:0.45]
+set size 0.9, 0.22
+set origin 0.0,0.75
+set lmargin 8.0
+set mytics 3
+set key top right
+show key
+set xlabel ""
+set ylabel "Area, {\305}^{2}"
+
+

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cool_time=60
+t=/home/khelgeo/apbs/surface_ion/dynamics/3A_PC_PS_PIP2
+
+
+	./dynamics parameters.dat $t/7800/potential.dx $t/7800/combinedcharge.dx $t/7800/chargePS.dx $t/7800/chargePIP2.dx PS_out_7800.dat PIP2_out_7800.dat	
+	
+
+exit 0
+
+
