@@ -1,0 +1,44 @@
+read 
+    mol pqr apo_f.pqr
+end
+elec name bar
+    mg-manual                          # Use the multigrid method
+    dime 257 257 257                   # Grid dimensions
+    nlev 7
+    grid 1.0 1.0 1.0                   # Grid length
+    gcent 0.0 0.0 0.0
+    mol 1                              
+    npbe                               
+    bcfl mdh                           # Multipole boundary conditions
+    ion 1 0.150 0.0                    # Zero ionic strength
+    ion -1 0.150 0.0                   # Zero ionic strength
+    pdie 2.0                           # Solute dielectric
+    sdie 80.00                         # Solvent dielectric
+    chgm spl2                          # Charge disc method (linear)
+    sdens 10.0
+    srad 1.4                           # Solvent radius
+    srfm mol                          # specify the model for die
+    swin 0.3                           # Surface cubic spline window
+    temp 310.00                        # Temperature
+    gamma 0.105                        # Surface tension (in kJ/mol/A^2)
+    calcenergy total
+    calcenergy comps 
+    calcforce no 
+    write pot dx potenial           # Write potential to potential.dx
+    write charge dx charge_f          # Write charge to charge.dx
+    write kappa dx kappa_f           # Write kappa to kappa.dx
+    write dielx dx dielx_f           # Write dielx to dielx.dx
+    write diely dx diely_f           # Write diely to diely.dx
+    write dielz dx dielz_f           # Write dielz to dielz.dx
+end
+
+quit
+
+
+print
+        energy bar
+end
+print
+        force bar
+end
+
