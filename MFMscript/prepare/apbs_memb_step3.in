@@ -2,13 +2,13 @@ read
     mol pqr Irrevelant.pqr # Read flat surface (mol 1)
 end
 read
-    charge dx inputChargeDensity.dx
+    charge dx inputChargeDensity_memb.dx
 end
 read
-    diel dx inputDialetricMapX.dx inputDialetricMapY.dx inputDialetricMapZ.dx
+    diel dx inputDialetricMapX_memb.dx inputDialetricMapY_memb.dx inputDialetricMapZ_memb.dx
 end
 read
-    kappa dx inputIonAccess.dx
+    kappa dx inputIonAccess_memb.dx
 end
 elec name bar
     mg-manual                          # Use the multigrid method
@@ -36,7 +36,7 @@ elec name bar
     usemap charge 1
     usemap diel 1
     usemap kappa 1
-    write pot dx Potential
+    write pot dx Potential_step3
 end
 
 

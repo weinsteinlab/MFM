@@ -5,7 +5,7 @@ from gridData import Grid
 
 
 dx = OpenDX.field(0)
-dx.read("Potential.dx")
+dx.read("Potential_step1.dx")
 
 histogram, edges = dx.histogramdd()
 

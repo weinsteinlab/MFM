@@ -1,5 +1,5 @@
 read 
-    mol pqr apo_f.pqr
+    mol pqr apo_prot.pqr
 end
 elec name bar
     mg-manual                          # Use the multigrid method
@@ -25,11 +25,11 @@ elec name bar
     calcenergy comps 
     calcforce no 
     write pot dx potenial           # Write potential to potential.dx
-    write charge dx charge_f          # Write charge to charge.dx
-    write kappa dx kappa_f           # Write kappa to kappa.dx
-    write dielx dx dielx_f           # Write dielx to dielx.dx
-    write diely dx diely_f           # Write diely to diely.dx
-    write dielz dx dielz_f           # Write dielz to dielz.dx
+    write charge dx charge_prot          # Write charge to charge_prot.dx
+    write kappa dx kappa_prot           # Write kappa to kappa_prot.dx
+    write dielx dx dielx_prot           # Write dielx to dielx_prot.dx
+    write diely dx diely_prot           # Write diely to diely_prot.dx
+    write dielz dx dielz_prot           # Write dielz to dielz_prot.dx
 end
 
 quit
